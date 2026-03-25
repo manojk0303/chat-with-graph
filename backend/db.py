@@ -75,6 +75,23 @@ def _get_con() -> duckdb.DuckDBPyConnection:
     register("sales_order_headers",            "sales_order_headers")
     register("sales_order_items",              "sales_order_items")
 
+    # Fail fast if dataset files were not found and views were not created (common on Render if data folder is missing)
+    required_views = [
+        "business_partners",
+        "billing_document_headers",
+        "billing_document_items",
+        "journal_entry_items_accounts_receivable",
+        "payments_accounts_receivable",
+        "sales_order_headers",
+        "sales_order_items",
+    ]
+    missing = [v for v in required_views if not _con.execute(f"SELECT count(*) FROM information_schema.tables WHERE table_name = '{v}'").fetchone()[0]]
+    if missing:
+        raise RuntimeError(
+            "Missing required dataset tables: " + ", ".join(missing) +
+            " — ensure sap-o2c-data is present on the server or set DATA_DIR to the dataset path."
+        )
+
     return _con
 
 
