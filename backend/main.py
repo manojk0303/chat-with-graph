@@ -291,7 +291,7 @@ async def call_gemini_for_intent(user_message: str) -> Dict[str, Any]:
             response = await client.post(
                 f"{GEMINI_ENDPOINT}?key={GEMINI_API_KEY}",
                 json=payload,
-                timeout=30.0
+                timeout=60.0
             )
             response.raise_for_status()
         except httpx.HTTPError as e:
@@ -353,7 +353,7 @@ async def call_gemini_for_sql(user_message: str, history: Optional[List[ChatMess
             response = await client.post(
                 f"{GEMINI_ENDPOINT}?key={GEMINI_API_KEY}",
                 json=payload,
-                timeout=30.0
+                timeout=60.0
             )
             response.raise_for_status()
         except httpx.HTTPError as e:
@@ -424,7 +424,7 @@ Only return JSON, no markdown or preamble."""
             response = await client.post(
                 f"{GEMINI_ENDPOINT}?key={GEMINI_API_KEY}",
                 json=payload,
-                timeout=30.0
+                timeout=60.0
             )
             response.raise_for_status()
         except httpx.HTTPError as e:
@@ -588,7 +588,7 @@ Only return JSON, no markdown."""
                 response = await client.post(
                     f"{GEMINI_ENDPOINT}?key={GEMINI_API_KEY}",
                     json=fix_payload,
-                    timeout=30.0
+                    timeout=60.0
                 )
                 response.raise_for_status()
             
