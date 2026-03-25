@@ -1,0 +1,15 @@
+# Node (frontend)
+node_modules/
+dist/
+.env
+
+# Python (backend)
+__pycache__/
+*.pyc
+venv/
+.env
+backend_venv/
+sap-o2c-data/
+
+# Common
+.DS_Store
