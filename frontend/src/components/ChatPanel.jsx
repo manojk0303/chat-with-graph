@@ -3,7 +3,6 @@ import axios from 'axios'
 
 const STARTER_CHIPS = [
     'Which products have the most billing documents?',
-    'Show orders with incomplete O2C flows',
     'Trace billing document 90504248',
     'Which customer has the highest total order value?',
 ]
