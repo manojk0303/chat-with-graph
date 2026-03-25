@@ -58,7 +58,7 @@ export default function ChatPanel({ onHighlight, activeHighlightIndex, setActive
         setLoading(true)
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/chat`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'https://graph-chat-476374146832.asia-south1.run.app'}/chat`, {
                 message: messageText,
                 history: messages,
             })
@@ -234,7 +234,7 @@ export default function ChatPanel({ onHighlight, activeHighlightIndex, setActive
                                     </button>
                                     {expandedSql.has(i) && (
                                         <div className="mt-2 bg-gray-900 text-gray-100 rounded-md p-3 overflow-x-auto max-h-48 overflow-y-auto shadow-inner">
-                                            <code className="font-mono text-xs whitespace-pre">{msg.sql}</code>
+                                            <code className="font-mono text-xs whitespace-pre-wrap break-words">{msg.sql}</code>
                                         </div>
                                     )}
                                 </div>
