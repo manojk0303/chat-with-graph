@@ -92,6 +92,26 @@ LIMIT 20
    - Automatically finds a representative complete flow example (WHERE bd.accountingDocument IS NOT NULL AND EXISTS (SELECT 1 FROM journal_entry_items_accounts_receivable WHERE accountingDocument = bd.accountingDocument))
    - AND use IS NOT NULL checks on joining columns when they are known to have gaps.
 
+10. BROKEN FLOW / INCOMPLETE PROCESS QUERIES:
+   - "Delivered but not billed":
+     SELECT odh.deliveryDocument, odh.shippingPoint, odh.creationDate
+     FROM outbound_delivery_headers odh
+     LEFT JOIN billing_document_items bdi ON odh.deliveryDocument = bdi.referenceSdDocument
+     WHERE bdi.billingDocument IS NULL
+     LIMIT 20
+   - "Order not delivered":
+     SELECT soh.salesOrder, soh.soldToParty, soh.totalNetAmount
+     FROM sales_order_headers soh
+     LEFT JOIN outbound_delivery_items odi ON soh.salesOrder = odi.referenceSdDocument
+     WHERE odi.deliveryDocument IS NULL
+     LIMIT 20
+   - "Billed but not posted/journaled":
+     SELECT bdh.billingDocument, bdh.totalNetAmount
+     FROM billing_document_headers bdh
+     LEFT JOIN journal_entry_items_accounts_receivable je ON bdh.accountingDocument = je.accountingDocument
+     WHERE bdh.billingDocumentIsCancelled = false AND je.accountingDocument IS NULL
+     LIMIT 20
+
 ## CRITICAL TABLE NAME MAPPING (memorize these):
 - NEVER use "delivery_items" → correct name is "outbound_delivery_items"
 - NEVER use "deliveries" or "delivery_headers" → correct name is "outbound_delivery_headers"  

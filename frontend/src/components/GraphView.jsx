@@ -102,16 +102,25 @@ export default function GraphView({ highlightedIds = [] }) {
 
     const nodeColor = useCallback(node => {
         if (!hlSet.size) return node.color
-        // if highlighted, return bright yellow. Otherwise very dim version of natural color
-        return hlSet.has(node.id) ? '#ffd700' : node.color + '20'
+        // Fix: Use original node color for highlighted nodes so type is visible.
+        // Dim non-highlighted nodes significantly.
+        return hlSet.has(node.id) ? node.color : node.color + '15'
+    }, [highlightedIds])
+
+    const nodeVal = useCallback(node => {
+        const val = node.val || 5
+        if (!hlSet.size) return val
+        // Make highlighted nodes slightly larger to pop
+        return hlSet.has(node.id) ? val * 1.8 : val
     }, [highlightedIds])
 
     const linkColor = useCallback(link => {
         if (!hlSet.size) return 'rgba(148, 163, 184, 0.15)'
         const s = typeof link.source === 'object' ? link.source.id : link.source
         const t = typeof link.target === 'object' ? link.target.id : link.target
-        if (hlSet.has(s) && hlSet.has(t)) return 'rgba(255,215,0,0.9)'
-        if (hlSet.has(s) || hlSet.has(t)) return 'rgba(255,215,0,0.3)'
+        // Keep path yellow/gold so the flow is visible, but use 'opacity' to blend well
+        if (hlSet.has(s) && hlSet.has(t)) return 'rgba(255, 215, 0, 0.8)'
+        if (hlSet.has(s) || hlSet.has(t)) return 'rgba(255, 215, 0, 0.2)'
         return 'rgba(148, 163, 184, 0.05)'
     }, [highlightedIds])
 
@@ -119,7 +128,7 @@ export default function GraphView({ highlightedIds = [] }) {
         if (!hlSet.size) return 0.5
         const s = typeof link.source === 'object' ? link.source.id : link.source
         const t = typeof link.target === 'object' ? link.target.id : link.target
-        return hlSet.has(s) && hlSet.has(t) ? 3 : 0.5
+        return hlSet.has(s) && hlSet.has(t) ? 2.5 : 0.5
     }, [highlightedIds])
 
     // ── zoom on highlight ──────────────────────────────────────────────────
@@ -211,14 +220,14 @@ export default function GraphView({ highlightedIds = [] }) {
                             <div style="font-size:12px;font-weight:600;color:#0f172a">${node.name}</div>
                         </div>`
                     }
-
+                    // Fix: Use separate prop for dynamic sizing
                     nodeColor={nodeColor}
-                    nodeVal="val"
+                    nodeVal={nodeVal}
                     nodeOpacity={1}
                     nodeResolution={16}
 
-                    linkColor={linkColor}
                     linkWidth={linkWidth}
+                    linkColor={linkColor}
                     linkOpacity={1}
                     linkDirectionalParticles={1}
                     linkDirectionalParticleWidth={0.8}
