@@ -89,7 +89,7 @@ LIMIT 20
 7. Handle NULL values appropriately.
 8. OPTIMIZE JOINS: Always use the shortest available JOIN path documented in the Schema Reference. For example, to link Billing Documents to Products, use the direct path via `billing_document_items.material`, avoiding intermediate tables (like Sales Orders/Deliveries) to prevent dropping rows on incomplete sample data.
 9. TRACE FLOW QUERIES (if user asks to trace/follow a flow without specifying an ID): IMPORTANT - Not all billing documents have complete flows to journal entries. Use a flexible query that:
-   - Automatically finds a representative complete flow example (WHERE bd.accountingDocument IS NOT NULL AND EXISTS (SELECT 1 FROM journal_entries WHERE accountingDocument = bd.accountingDocument))
+   - Automatically finds a representative complete flow example (WHERE bd.accountingDocument IS NOT NULL AND EXISTS (SELECT 1 FROM journal_entry_items_accounts_receivable WHERE accountingDocument = bd.accountingDocument))
    - AND use IS NOT NULL checks on joining columns when they are known to have gaps.
 
 ## CRITICAL TABLE NAME MAPPING (memorize these):
@@ -537,9 +537,9 @@ The original question was: {user_message}
 
 Fix the SQL. Remember these critical schema facts:
 - product_descriptions.product is the primary key (NOT material). Join with billing_document_items ON pd.product = bdi.material. Join with sales_order_items ON pd.product = soi.material
-- deliveries table has NO salesOrder column
-- delivery_items.referenceSdDocument links to sales_order_headers.salesOrder
-- billing_document_items.referenceSdDocument links to deliveries.deliveryDocument or sales_order_headers.salesOrder
+- outbound_delivery_headers table has NO salesOrder column
+- outbound_delivery_items.referenceSdDocument links to sales_order_headers.salesOrder
+- billing_document_items.referenceSdDocument links to outbound_delivery_headers.deliveryDocument or sales_order_headers.salesOrder
 - journal_entries.accountingDocumentItem is the line item field
 - Payments link to journal_entries via the clearingAccountingDocument field
 - Table "delivery_items" should be "outbound_delivery_items"

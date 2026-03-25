@@ -58,7 +58,7 @@ export default function ChatPanel({ onHighlight, activeHighlightIndex, setActive
         setLoading(true)
 
         try {
-            const response = await axios.post('http://localhost:8000/chat', {
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/chat`, {
                 message: messageText,
                 history: messages,
             })

@@ -42,7 +42,7 @@ export default function GraphView({ highlightedIds = [] }) {
 
     // ── load graph data ───────────────────────────────────────────────────
     useEffect(() => {
-        axios.get('http://localhost:8000/graph')
+        axios.get(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/graph`)
             .then(({ data }) => {
                 const nodes = data.nodes.map(n => ({
                     id: n.id,
